@@ -49,7 +49,7 @@ public:
 };
 
 void addTicket() {
-    
+    Ticket newTicket(name, src, dest, flight, date, paymentMethod);
 }
 
 void fetchAllTickets() {
