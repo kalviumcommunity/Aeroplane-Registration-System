@@ -31,25 +31,31 @@ private:
     string date;
     PaymentMethod* payment;
 
-  
 public:
+
     Ticket() : payment(nullptr) {}
 
-   Ticket(string passengerName, string source, string destination, string flightNumber, string date, PaymentMethod* payment) {
-    this->passengerName = passengerName;
-    this->source = source;
-    this->destination = destination;
-    this->flightNumber = flightNumber;
-    this->date = date;
-    this->payment = payment;
    
-}
+    Ticket(string passengerName, string source, string destination, string flightNumber, string date, PaymentMethod* payment) {
+        this->passengerName = passengerName;
+        this->source = source;
+        this->destination = destination;
+        this->flightNumber = flightNumber;
+        this->date = date;
+        this->payment = payment;
+    }
+
+    // Destructor
+    ~Ticket() {
+        delete payment; 
+    }
 
     void saveTicket() {
+        
     }
 
     void displayTicket() {
-		 cout << "Passenger Name: " << this->passengerName << endl;
+        cout << "Passenger Name: " << this->passengerName << endl;
         cout << "Source: " << this->source << endl;
         cout << "Destination: " << this->destination << endl;
         cout << "Flight Number: " << this->flightNumber << endl;
@@ -62,24 +68,68 @@ public:
     }
 
     string getPassengerName() {
+        return passengerName;
     }
 
     static int getTotalTickets() {
+       
+        return 0; 
     }
 };
 
 void addTicket() {
-	string passengerName, source, destination, flightNumber, date;
-    int paymentMethod;
+    string passengerName, source, destination, flightNumber, date;
+    int paymentChoice;
+
+    cin.ignore(); // Clear the newline character left in the buffer
+
+    cout << "Enter passenger name: ";
+    getline(cin, passengerName);
+
+    cout << "Enter source: ";
+    getline(cin, source);
+
+    cout << "Enter destination: ";
+    getline(cin, destination);
+
+    cout << "Enter flight number: ";
+    getline(cin, flightNumber);
+
+    cout << "Enter date: ";
+    getline(cin, date);
+
+    cout << "Select Payment Method:" << endl;
+    cout << "1. Credit Card" << endl;
+    cout << "2. Cash" << endl;
+    cout << "Enter your choice: ";
+    cin >> paymentChoice;
+
+    PaymentMethod* paymentMethod = nullptr;
+
+    switch (paymentChoice) {
+        case 1:
+            paymentMethod = new CreditCardPayment();
+            break;
+        case 2:
+            paymentMethod = new CashPayment();
+            break;
+        default:
+            cout << "Invalid payment method choice." << endl;
+            return;
+    }
 
     Ticket newTicket(passengerName, source, destination, flightNumber, date, paymentMethod);
+    newTicket.saveTicket();
+
+    cout << "Ticket saved successfully!" << endl;
 }
 
 void fetchAllTickets() {
-
+    
 }
 
 void searchTicket() {
+    
 }
 
 int main() {
