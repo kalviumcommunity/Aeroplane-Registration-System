@@ -45,7 +45,7 @@ public:
         this->payment = payment;
     }
 
-    // Destructor
+
     ~Ticket() {
         delete payment; 
     }
@@ -81,7 +81,7 @@ void addTicket() {
     string passengerName, source, destination, flightNumber, date;
     int paymentChoice;
 
-    cin.ignore(); // Clear the newline character left in the buffer
+    cin.ignore(); 
 
     cout << "Enter passenger name: ";
     getline(cin, passengerName);
@@ -131,7 +131,6 @@ void fetchAllTickets() {
 void searchTicket() {
     
 }
-
 int main() {
     int choice;
 

@@ -1,2 +1,2 @@
 # Aeroplane-Registration-System
-This is your first repository
+This is a aeroplane management system
