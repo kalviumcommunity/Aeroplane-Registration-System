@@ -33,12 +33,32 @@ private:
 
   
 public:
+    Ticket() : payment(nullptr) {}
+
+   Ticket(string passengerName, string source, string destination, string flightNumber, string date, PaymentMethod* payment) {
+    this->passengerName = passengerName;
+    this->source = source;
+    this->destination = destination;
+    this->flightNumber = flightNumber;
+    this->date = date;
+    this->payment = payment;
    
+}
 
     void saveTicket() {
     }
 
     void displayTicket() {
+		 cout << "Passenger Name: " << this->passengerName << endl;
+        cout << "Source: " << this->source << endl;
+        cout << "Destination: " << this->destination << endl;
+        cout << "Flight Number: " << this->flightNumber << endl;
+        cout << "Date: " << this->date << endl;
+
+        if (payment) {
+            cout << "Payment Method: ";
+            payment->makePayment();
+        }
     }
 
     string getPassengerName() {
@@ -49,7 +69,10 @@ public:
 };
 
 void addTicket() {
-    Ticket newTicket(name, src, dest, flight, date, paymentMethod);
+	string passengerName, source, destination, flightNumber, date;
+    int paymentMethod;
+
+    Ticket newTicket(passengerName, source, destination, flightNumber, date, paymentMethod);
 }
 
 void fetchAllTickets() {
