@@ -79,6 +79,7 @@ public:
 };
 int Ticket::totalTickets = 0;//initilizing total ticket as 0
 
+Ticket ticketDatabase[100];//creating array of objects to save 100 ticket 
 int numTickets = 0;
 const int maxTickets = 100;//fixing the size of total ticet to b 100
 
@@ -131,6 +132,7 @@ void addTicket() {
     Ticket newTicket(name, src, dest, flight, date, paymentMethod);
     newTicket.saveTicket();
 
+    ticketDatabase[numTickets++] = newTicket;//creating a new ticket and adding it to array of objects
 
     cout << "Ticket saved successfully!" << endl;
 }
@@ -141,7 +143,10 @@ void fetchAllTickets() {
         return;
     }
 
-    
+    for (int i = 0; i < numTickets; ++i) {
+        ticketDatabase[i].displayTicket();
+        cout << endl;
+    }
 }
 
 void searchTicket() {  
