@@ -30,6 +30,7 @@ private:
     string flightNumber;
     string date;
     PaymentMethod* payment;
+     static int totalTickets;//creating an static variable 
 
 public:
 
@@ -72,28 +73,37 @@ public:
     }
 
     static int getTotalTickets() {
-       
+        return totalTickets;
         return 0; 
     }
 };
+int Ticket::totalTickets = 0;//initilizing total ticket as 0
+
+int numTickets = 0;
+const int maxTickets = 100;//fixing the size of total ticet to b 100
 
 void addTicket() {
-    string passengerName, source, destination, flightNumber, date;
+    if (numTickets >= maxTickets) {
+        cout << "Maximum number of tickets reached. Cannot add more tickets." << endl;
+        return;
+    }
+
+    string name, src, dest, flight, date;
     int paymentChoice;
 
     cin.ignore(); 
 
     cout << "Enter passenger name: ";
-    getline(cin, passengerName);
+    getline(cin, name);
 
     cout << "Enter source: ";
-    getline(cin, source);
+    getline(cin, src);
 
     cout << "Enter destination: ";
-    getline(cin, destination);
+    getline(cin, dest);
 
     cout << "Enter flight number: ";
-    getline(cin, flightNumber);
+    getline(cin, flight);
 
     cout << "Enter date: ";
     getline(cin, date);
@@ -118,19 +128,26 @@ void addTicket() {
             return;
     }
 
-    Ticket newTicket(passengerName, source, destination, flightNumber, date, paymentMethod);
+    Ticket newTicket(name, src, dest, flight, date, paymentMethod);
     newTicket.saveTicket();
+
 
     cout << "Ticket saved successfully!" << endl;
 }
 
 void fetchAllTickets() {
+    if (numTickets == 0) {
+        cout << "No tickets available." << endl;
+        return;
+    }
+
     
 }
 
-void searchTicket() {
+void searchTicket() {  
     
 }
+
 int main() {
     int choice;
 
