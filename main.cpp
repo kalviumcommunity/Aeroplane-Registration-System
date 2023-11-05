@@ -74,7 +74,7 @@ public:
 
     static int getTotalTickets() {
         return totalTickets;
-        return 0; 
+
     }
 };
 int Ticket::totalTickets = 0;//initilizing total ticket as 0
