@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 using namespace std;
-
+//abstraction
 class PaymentMethod {
 public:
     virtual void makePayment() = 0;
@@ -21,7 +21,7 @@ public:
         cout << "Payment made using cash." << endl;
     }
 };
-
+// abstraction
 class Ticket {
 private:
     string passengerName;
@@ -50,9 +50,27 @@ public:
     ~Ticket() {
         delete payment; 
     }
-
+//addes new finction
     void saveTicket() {
-        
+         ofstream file((passengerName + "_ticket.txt").c_str());
+
+        if (!file.is_open()) {
+            cout << "Error: Unable to create the ticket file!" << endl;
+            return;
+        }
+
+        file << "Passenger Name: " << passengerName << endl;
+        file << "Source: " << source << endl;
+        file << "Destination: " << destination << endl;
+        file << "Flight Number: " << flightNumber << endl;
+        file << "Date: " << date << endl;
+
+        if (payment) {
+            file << "Payment Method: ";
+            payment->makePayment();
+        }
+
+        file.close();
     }
 
     void displayTicket() {
@@ -114,7 +132,7 @@ void addTicket() {
     cout << "2. Cash" << endl;
     cout << "Enter your choice: ";
     cin >> paymentChoice;
-
+//dynamic memory allocation
     PaymentMethod* paymentMethod = nullptr;
 
     switch (paymentChoice) {
