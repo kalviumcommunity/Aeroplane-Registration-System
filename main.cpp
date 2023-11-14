@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 using namespace std;
-//abstraction
+
 class PaymentMethod {
 public:
     virtual void makePayment() = 0;
@@ -21,7 +21,7 @@ public:
         cout << "Payment made using cash." << endl;
     }
 };
-// abstraction
+
 class Ticket {
 private:
     string passengerName;
@@ -30,13 +30,13 @@ private:
     string flightNumber;
     string date;
     PaymentMethod* payment;
-     static int totalTickets;//creating an static variable 
+
+    // Static variable to keep track of the total number of tickets created.
+    static int totalTickets;
 
 public:
-
     Ticket() : payment(nullptr) {}
 
-   
     Ticket(string passengerName, string source, string destination, string flightNumber, string date, PaymentMethod* payment) {
         this->passengerName = passengerName;
         this->source = source;
@@ -45,14 +45,12 @@ public:
         this->date = date;
         this->payment = payment;
     }
-
-
-    ~Ticket() {
+~Ticket() {
         delete payment; 
     }
-//addes new finction
+
     void saveTicket() {
-         ofstream file((passengerName + "_ticket.txt").c_str());
+        ofstream file((passengerName + "_ticket.txt").c_str());
 
         if (!file.is_open()) {
             cout << "Error: Unable to create the ticket file!" << endl;
@@ -90,16 +88,18 @@ public:
         return passengerName;
     }
 
+    // Static function to get the total number of tickets.
     static int getTotalTickets() {
         return totalTickets;
-
     }
 };
-int Ticket::totalTickets = 0;//initilizing total ticket as 0
 
-Ticket ticketDatabase[100];//creating array of objects to save 100 ticket 
+// Initialize the static variable.
+int Ticket::totalTickets = 0;
+
+Ticket ticketDatabase[100];
 int numTickets = 0;
-const int maxTickets = 100;//fixing the size of total ticet to b 100
+const int maxTickets = 100;
 
 void addTicket() {
     if (numTickets >= maxTickets) {
@@ -110,7 +110,7 @@ void addTicket() {
     string name, src, dest, flight, date;
     int paymentChoice;
 
-    cin.ignore(); 
+    cin.ignore(); // Clear the newline character left in the buffer
 
     cout << "Enter passenger name: ";
     getline(cin, name);
@@ -132,7 +132,7 @@ void addTicket() {
     cout << "2. Cash" << endl;
     cout << "Enter your choice: ";
     cin >> paymentChoice;
-//dynamic memory allocation
+
     PaymentMethod* paymentMethod = nullptr;
 
     switch (paymentChoice) {
@@ -150,7 +150,7 @@ void addTicket() {
     Ticket newTicket(name, src, dest, flight, date, paymentMethod);
     newTicket.saveTicket();
 
-    ticketDatabase[numTickets++] = newTicket;//creating a new ticket and adding it to array of objects
+    ticketDatabase[numTickets++] = newTicket;
 
     cout << "Ticket saved successfully!" << endl;
 }
@@ -167,8 +167,25 @@ void fetchAllTickets() {
     }
 }
 
-void searchTicket() {  
-    
+void searchTicket() {
+    cin.ignore(); // Clear the newline character left in the buffer
+    string name;
+    cout << "Enter passenger name to search: ";
+    getline(cin, name);
+
+    bool found = false;
+
+    for (int i = 0; i < numTickets; ++i) {
+        if (ticketDatabase[i].getPassengerName() == name) {
+            ticketDatabase[i].displayTicket();
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Ticket not found for passenger: " << name << endl;
+    }
 }
 
 int main() {
