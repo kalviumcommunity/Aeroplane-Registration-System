@@ -2,12 +2,15 @@
 #include <fstream>
 #include <string>
 using namespace std;
-//abstraction
+
+// Abstract class for PaymentMethod
 class PaymentMethod {
 public:
-    virtual void makePayment() = 0;
+    virtual void makePayment() = 0; // Pure virtual function for making payment
+    virtual ~PaymentMethod() {} // Virtual destructor for polymorphic behavior
 };
 
+// Concrete class for Credit Card Payment
 class CreditCardPayment : public PaymentMethod {
 public:
     void makePayment() override {
@@ -15,13 +18,24 @@ public:
     }
 };
 
+// Concrete class for Cash Payment
 class CashPayment : public PaymentMethod {
 public:
     void makePayment() override {
         cout << "Payment made using cash." << endl;
     }
 };
-// abstraction
+
+// Interface for Ticket Management
+class TicketManagement {
+public:
+    virtual void addTicket() = 0; // Pure virtual function for adding a ticket
+    virtual void fetchAllTickets() = 0; // Pure virtual function for fetching all tickets
+    virtual void searchTicket() = 0; // Pure virtual function for searching a ticket
+    virtual ~TicketManagement() {} // Virtual destructor for polymorphic behavior
+};
+
+// Class for Ticket
 class Ticket {
 private:
     string passengerName;
@@ -30,13 +44,9 @@ private:
     string flightNumber;
     string date;
     PaymentMethod* payment;
-     static int totalTickets;//creating an static variable 
 
 public:
-
-    Ticket() : payment(nullptr) {}
-
-   
+    // Constructor for Ticket
     Ticket(string passengerName, string source, string destination, string flightNumber, string date, PaymentMethod* payment) {
         this->passengerName = passengerName;
         this->source = source;
@@ -46,13 +56,14 @@ public:
         this->payment = payment;
     }
 
-
+    // Destructor for Ticket
     ~Ticket() {
-        delete payment; 
+        delete payment;
     }
-//addes new finction
+
+    // Function to save ticket details to a file
     void saveTicket() {
-         ofstream file((passengerName + "_ticket.txt").c_str());
+        ofstream file((passengerName + "_ticket.txt").c_str());
 
         if (!file.is_open()) {
             cout << "Error: Unable to create the ticket file!" << endl;
@@ -73,6 +84,7 @@ public:
         file.close();
     }
 
+    // Function to display ticket details
     void displayTicket() {
         cout << "Passenger Name: " << this->passengerName << endl;
         cout << "Source: " << this->source << endl;
@@ -86,92 +98,116 @@ public:
         }
     }
 
+    // Function to get passenger name
     string getPassengerName() {
         return passengerName;
     }
+};
 
-    static int getTotalTickets() {
-        return totalTickets;
+// Class implementing TicketManagement interface
+class TicketManager : public TicketManagement {
+private:
+    Ticket ticketDatabase[100];
+    int numTickets;
+    const int maxTickets;
 
+public:
+    // Constructor for TicketManager
+    TicketManager() : numTickets(0), maxTickets(100) {} // Initialize numTickets and maxTickets
+
+    // Function to add a ticket
+    void addTicket() override {
+        if (numTickets >= maxTickets) {
+            cout << "Maximum number of tickets reached. Cannot add more tickets." << endl;
+            return;
+        }
+
+        string name, src, dest, flight, date;
+        int paymentChoice;
+
+        cin.ignore(); // Clear the newline character left in the buffer
+
+        cout << "Enter passenger name: ";
+        getline(cin, name);
+
+        cout << "Enter source: ";
+        getline(cin, src);
+
+        cout << "Enter destination: ";
+        getline(cin, dest);
+
+        cout << "Enter flight number: ";
+        getline(cin, flight);
+
+        cout << "Enter date: ";
+        getline(cin, date);
+
+        cout << "Select Payment Method:" << endl;
+        cout << "1. Credit Card" << endl;
+        cout << "2. Cash" << endl;
+        cout << "Enter your choice: ";
+        cin >> paymentChoice;
+
+        PaymentMethod* paymentMethod = nullptr;
+
+        switch (paymentChoice) {
+            case 1:
+                paymentMethod = new CreditCardPayment();
+                break;
+            case 2:
+                paymentMethod = new CashPayment();
+                break;
+            default:
+                cout << "Invalid payment method choice." << endl;
+                return;
+        }
+
+        Ticket newTicket(name, src, dest, flight, date, paymentMethod);
+        newTicket.saveTicket();
+
+        ticketDatabase[numTickets++] = newTicket;
+
+        cout << "Ticket saved successfully!" << endl;
+    }
+
+    // Function to fetch all tickets
+    void fetchAllTickets() override {
+        if (numTickets == 0) {
+            cout << "No tickets available." << endl;
+            return;
+        }
+
+        for (int i = 0; i < numTickets; ++i) {
+            ticketDatabase[i].displayTicket();
+            cout << endl;
+        }
+    }
+
+    // Function to search for a ticket
+    void searchTicket() override {
+        cin.ignore(); // Clear the newline character left in the buffer
+        string name;
+        cout << "Enter passenger name to search: ";
+        getline(cin, name);
+
+        bool found = false;
+
+        for (int i = 0; i < numTickets; ++i) {
+            if (ticketDatabase[i].getPassengerName() == name) {
+                ticketDatabase[i].displayTicket();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Ticket not found for passenger: " << name << endl;
+        }
     }
 };
-int Ticket::totalTickets = 0;//initilizing total ticket as 0
-
-Ticket ticketDatabase[100];//creating array of objects to save 100 ticket 
-int numTickets = 0;
-const int maxTickets = 100;//fixing the size of total ticet to b 100
-
-void addTicket() {
-    if (numTickets >= maxTickets) {
-        cout << "Maximum number of tickets reached. Cannot add more tickets." << endl;
-        return;
-    }
-
-    string name, src, dest, flight, date;
-    int paymentChoice;
-
-    cin.ignore(); 
-
-    cout << "Enter passenger name: ";
-    getline(cin, name);
-
-    cout << "Enter source: ";
-    getline(cin, src);
-
-    cout << "Enter destination: ";
-    getline(cin, dest);
-
-    cout << "Enter flight number: ";
-    getline(cin, flight);
-
-    cout << "Enter date: ";
-    getline(cin, date);
-
-    cout << "Select Payment Method:" << endl;
-    cout << "1. Credit Card" << endl;
-    cout << "2. Cash" << endl;
-    cout << "Enter your choice: ";
-    cin >> paymentChoice;
-//dynamic memory allocation
-    PaymentMethod* paymentMethod = nullptr;
-
-    switch (paymentChoice) {
-        case 1:
-            paymentMethod = new CreditCardPayment();
-            break;
-        case 2:
-            paymentMethod = new CashPayment();
-            break;
-        default:
-            cout << "Invalid payment method choice." << endl;
-            return;
-    }
-
-    Ticket newTicket(name, src, dest, flight, date, paymentMethod);
-    newTicket.saveTicket();
-
-    ticketDatabase[numTickets++] = newTicket;//creating a new ticket and adding it to array of objects
-
-    cout << "Ticket saved successfully!" << endl;
-}
-
-void fetchAllTickets() {
-    if (numTickets == 0) {
-        cout << "No tickets available." << endl;
-        return;
-    }
-
-    for (int i = 0; i < numTickets; ++i) {
-        ticketDatabase[i].displayTicket();
-        cout << endl;
-    }
-}
-
-void searchTicket() {  
-    
-}
 
 int main() {
+    TicketManager manager;
     int choice;
 
     while (true) {
@@ -181,13 +217,13 @@ int main() {
 
         switch (choice) {
             case 1:
-                addTicket();
+                manager.addTicket();
                 break;
             case 2:
-                fetchAllTickets();
+                manager.fetchAllTickets();
                 break;
             case 3:
-                searchTicket();
+                manager.searchTicket();
                 break;
             case 4:
                 return 0;
